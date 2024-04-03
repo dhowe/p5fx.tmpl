@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="./style.css">
+
+<head>
+  <script src="./p5.min.js"></script>
+  <script src="./fxhash.min.js"></script>
+  <script>
+    // don't modify unless you know what you're doing
+    let title, devPort = 5501;
+    let isMobile = /Android|webOS|iPhone|iPad|IEMobile|Mini/i.test(navigator.userAgent);
+    function createCanvasFx(w, h, name = 'sketch') {  // use instead of createCanvas()
+      title = name;
+      console.log(`http://127.0.0.1:${devPort}/index.html?preview=0&fxhash=${$fx.hash}`);
+      let seed = round($fx.rand() * 1e9); // must use $fx.rand() for deterministic randomness
+      randomSeed(seed);
+      noiseSeed(seed);
+      frameRate(30);
+      createCanvas(w, h);
+      // if mobile, set pixel ratio to 1, otherwise to min(2, devicePixelRatio) 
+      isMobile ? pixelDensity(1) : pixelDensity(min(window.devicePixelRatio), 2);
+    }
+    function keyTyped() { // save sketch as .png image when 's' key  is typed
+      if (keyCode === 83) save(`${title}.${$fx.hash}.png`);
+    }
+    function previewFx() { $fx.preview(); } // call when sketch is ready for capture
+  </script>
+</head>
+
+<body>
+  <script src="./sketch.js"></script>
+</body>
+
+</html>
