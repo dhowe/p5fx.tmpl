@@ -7,29 +7,26 @@
   <script src="./fxhash.min.js"></script>
   <script>
     // don't modify unless you know what you're doing
-    let title, devPort = 5501;
-    let isMobile = /Android|webOS|iPhone|iPad|IEMobile|Mini/i.test(navigator.userAgent);
-
-    function createCanvasFx(w, h, name = 'sketch') {  // use instead of createCanvas()
+    let cvs, title, url = 'http://127.0.0.1:5501/index.html?preview=0&fxhash=';
+    let urlParams = new URLSearchParams(window.location.search);
+    let pscale = urlParams.get('scale') ?? 1;
+    function createCanvasFx(w, h, name = 'sketch') {
       title = name;
-      console.log(`http://127.0.0.1:${devPort}/index.html?preview=0&fxhash=${$fx.hash}`);
-      let seed = round($fx.rand() * 1e9); // must use $fx.rand() for deterministic randomness
+      console.log(url + $fx.hash);
+      let seed = round($fx.rand() * Number.MAX_SAFE_INTEGER);
       randomSeed(seed);
-      noiseSeed(seed);
       frameRate(30);
-      createCanvas(w, h);
-      // if mobile, set pixel ratio to 1, otherwise to min(2, devicePixelRatio) 
-      isMobile ? pixelDensity(1) : pixelDensity(min(window.devicePixelRatio), 2);
+      cvs = createCanvas(w, h);
+      pixelDensity(min(window.devicePixelRatio), 2);
     }
-
-    function keyTyped() { // save sketch as .png image when 's' key  is typed
+    function keyTyped() {
       function writePng(graphics) {
         let fname = `${title}-${width * pd}x${height * pd}.${$fx.hash}.png`;
         graphics ? graphics.save(fname) : save(fname);
         console.log(`saved ${fname}`);
       }
       let pd = pixelDensity();
-      if (key === 's') { // add scale=K to URL to save at Kx resolution (2 = 2x, 3 = 3x, etc.)
+      if (key === 's') {
         if (pscale === 1) return writePng();
         let buf = createGraphics(width, height);
         buf.pixelDensity(pd * pscale);
@@ -38,8 +35,8 @@
         writePng(buf);
       };
     }
-    
-    function previewFx() { $fx.preview(); } // call when sketch is ready for capture
+    function previewFx() { $fx.preview(); }
+  </script>
   </script>
 </head>
 
